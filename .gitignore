@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editors
+.idea/
+*.swp
+
+# Lightroom / build scratch
+*.lrcat
+*.lrcat-*
+Helper.lrdata/
