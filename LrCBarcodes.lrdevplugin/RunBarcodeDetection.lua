@@ -10,10 +10,22 @@ BarcodeDetection = {}
 -- Request permission
 function BarcodeDetection.requestPermission()
     LrFunctionContext.callWithContext("requestPermission", function( context )
+        -- getTargetPhotos is the selection; when nothing is selected it is
+        -- every photo in the current filmstrip. getAllPhotos, used previously,
+        -- ignored both and walked the entire catalog.
+        local photos = LrApplication.activeCatalog():getTargetPhotos()
+        local count = TableLength(photos)
+        if count == 0 then
+            LrDialogs.message( "Run Barcode Detection", "No photos are selected.", "info" )
+            return
+        end
         local f = LrView.osFactory()
         local c = f:column {
             f:static_text {
                 title = "The plug-in LrC Barcodes is requesting permission to write to your catalog."
+            },
+            f:static_text {
+                title = "Barcodes will be detected in " .. count .. " photo(s)."
             },
             f:static_text {
                 title = "This operation could take a long time."
@@ -25,12 +37,12 @@ function BarcodeDetection.requestPermission()
             actionVerb = "Proceed"
         }
         if result == 'ok' then
-            BarcodeDetection.detectBarcodes()
+            BarcodeDetection.detectBarcodes( photos )
         end
     end)
 end
 -- Initialize Event
-function BarcodeDetection.detectBarcodes()
+function BarcodeDetection.detectBarcodes( photos )
     local progressScope = LrProgressScope({
         title = "Detecting Barcodes"
     })
@@ -45,7 +57,6 @@ function BarcodeDetection.detectBarcodes()
         local keyTwo = "<data><!%[CDATA%["
         local keyTwoEnd = "%]%]></data>"
         catalog:withPrivateWriteAccessDo( function( )
-            local photos = catalog:getAllPhotos()
             local max = TableLength(photos)
             -- Each Photo
             for _, photo in pairs(photos) do

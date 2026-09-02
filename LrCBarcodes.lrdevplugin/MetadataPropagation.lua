@@ -83,7 +83,8 @@ function MetadataPropagation.processMetadata(props)
         progressScope:attachToFunctionContext( context )
         local catalog = LrApplication.activeCatalog()
         catalog:withWriteAccessDo( "processMetadata", function( )
-            local photos = catalog:getAllPhotos()
+            -- Selection, or the current filmstrip when nothing is selected.
+            local photos = catalog:getTargetPhotos()
             max = TableLength(photos)
             local value = nil
             for _, photo in pairs(photos) do
