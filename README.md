@@ -19,7 +19,8 @@ All original copyright notices are preserved in [LICENSE](LICENSE).
 
 ## Requirements
 
-- Adobe Lightroom Classic 12.0.1 or later
+- Adobe Lightroom Classic 12.0.1 or later — targets SDK 15.0, verified against
+  Lightroom Classic **15.5.1**
 - macOS (the plug-in shells out to a bundled `zbarimg` binary)
 
 ## Installation
@@ -41,6 +42,28 @@ Two commands appear under **File → Plug-in Extras**:
 Detected values show up in the Library module's metadata panel via the
 plug-in's own tagset.
 
+## Changes from upstream
+
+- **Own plug-in identifier.** Upstream declared
+  `com.adobe.lightroom.sdk.lrcbarcodes`, inherited from the SDK's HelloWorld
+  sample; the SDK guide reserves `com.adobe.*` for Adobe's own plug-ins. Now
+  `org.wsmetros.lrcbarcodes`.
+- **Barcode fields now appear in the Metadata panel.** The tagset referenced
+  its fields as `lrcBarcodes.barcodeType` / `lrcBarcodes.barcodeValue` — the
+  tagset's own `id` used as the prefix. The SDK addresses plug-in fields as
+  `<LrToolkitIdentifier>.<field id>`, and unmatched references are silently
+  omitted rather than erroring, so the two barcode fields never rendered.
+- **Explicit `LrSdkMinimumVersion = 5.0`** alongside `LrSdkVersion = 15.0`.
+  The minimum defaults to `LrSdkVersion`, so raising the latter on its own
+  would have restricted the plug-in to Lightroom Classic 15 and newer. The
+  effective minimum is unchanged from upstream.
+- **Added `VERSION` and `LrPluginInfoUrl`** so the Plug-in Manager shows a
+  version number and a link back to this repository.
+
+Note that the new identifier namespaces the custom metadata separately from
+upstream's build. Barcode values written by the original plug-in are not
+visible to this one.
+
 ## Known issues
 
 These are inherited from upstream and are the obvious first things to fix:
@@ -57,10 +80,6 @@ These are inherited from upstream and are the obvious first things to fix:
   large catalogs and offers no way to limit scope.
 - **Only the first barcode per image is recorded.** The XML parsing uses simple
   string matching and stops at the first `<symbol>` element.
-- **Plug-in identifier uses Adobe's namespace.** `Info.lua` declares
-  `com.adobe.lightroom.sdk.lrcbarcodes`. Changing it to a distinct identifier
-  would let this coexist with the original — note that doing so orphans any
-  metadata already written under the old identifier.
 
 ## License
 

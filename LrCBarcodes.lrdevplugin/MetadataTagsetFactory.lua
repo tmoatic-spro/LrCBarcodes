@@ -1,9 +1,13 @@
+-- Custom metadata fields are addressed in a tagset as
+-- '<LrToolkitIdentifier>.<field id>'. Upstream prefixed them with this
+-- tagset's own id instead, so Lightroom found no matching plug-in fields and
+-- silently omitted them from the panel.
 return {
     title = "LrC Barcode Metadata",
-    id = "lrcBarcodes",
+    id = "org.wsmetros.lrcbarcodes.tagset",
     items = {
-        'lrcBarcodes.barcodeType',
-        'lrcBarcodes.barcodeValue',
+        'org.wsmetros.lrcbarcodes.barcodeType',
+        'org.wsmetros.lrcbarcodes.barcodeValue',
 
         'com.adobe.separator',
 
